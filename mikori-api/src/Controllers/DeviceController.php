@@ -29,6 +29,14 @@ final class DeviceController
         return Response::ok(['status' => 'online', 'server_time' => gmdate('c')]);
     }
 
+    /** Resumen de hoy del hijo vinculado a este dispositivo (para la app Kids). */
+    public function today(Request $request): Response
+    {
+        $device = $request->device();
+        $summary = (new \Mikori\Services\StatsService())->todayForDevice((int) $device['child_id']);
+        return Response::ok($summary);
+    }
+
     /** Registra/actualiza el token FCM del dispositivo. */
     public function updateFcmToken(Request $request): Response
     {

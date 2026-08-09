@@ -194,6 +194,14 @@ check('apps devuelve 3', count($p['data']['apps'] ?? []) === 3, $p);
 [$s, $p] = call($router, 'POST', '/v1/devices/heartbeat', [], $deviceToken);
 check('heartbeat responde 200', $s === 200, [$s, $p]);
 
+// 24b) Resumen de hoy para la app Kids (device-auth)
+[$s, $p] = call($router, 'GET', '/v1/devices/me/today', [], $deviceToken);
+check('devices/me/today responde 200', $s === 200, [$s, $p]);
+check('me/today total = 5040s', ($p['data']['total_seconds'] ?? 0) === 5040, $p['data'] ?? null);
+check('me/today incluye child_name', ($p['data']['child_name'] ?? null) === 'Mateo', $p['data'] ?? null);
+[$s, $p] = call($router, 'GET', '/v1/devices/me/today');
+check('me/today sin token responde 401', $s === 401, [$s, $p]);
+
 // 25) Refresh token
 [$s, $p] = call($router, 'POST', '/v1/auth/refresh', ['refresh_token' => $refresh]);
 check('refresh responde 200', $s === 200, [$s, $p]);

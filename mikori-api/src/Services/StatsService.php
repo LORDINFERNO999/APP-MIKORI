@@ -73,7 +73,27 @@ final class StatsService
     public function today(int $userId, int $childId): array
     {
         $this->requireOwned($userId, $childId);
+        return $this->buildToday($childId);
+    }
 
+    /**
+     * Resumen de hoy para la app Kids (autenticada por dispositivo).
+     * No requiere usuario: el dispositivo ya está vinculado a ese hijo.
+     * @return array<string,mixed>
+     */
+    public function todayForDevice(int $childId): array
+    {
+        $summary = $this->buildToday($childId);
+        $child = $this->children->findById($childId);
+        $summary['child_name'] = $child['name'] ?? null;
+        return $summary;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    private function buildToday(int $childId): array
+    {
         $date = Clock::today();
         $dayOfWeek = (int) date('N'); // 1..7
         $totalSeconds = $this->usage->totalSecondsForChildOnDate($childId, $date);

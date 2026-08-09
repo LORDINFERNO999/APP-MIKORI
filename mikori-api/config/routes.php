@@ -58,6 +58,7 @@ $router->put('/v1/children/{id}/limits', [LimitController::class, 'update'])->au
 // ── Dispositivo (Kids) ──────────────────────────────────────────────────────
 $router->post('/v1/devices/usage', [StatsController::class, 'ingest'])->deviceAuth();
 $router->post('/v1/devices/heartbeat', [DeviceController::class, 'heartbeat'])->deviceAuth();
+$router->get('/v1/devices/me/today', [DeviceController::class, 'today'])->deviceAuth();
 $router->patch('/v1/devices/fcm-token', [DeviceController::class, 'updateFcmToken'])->deviceAuth();
 
 return $router;

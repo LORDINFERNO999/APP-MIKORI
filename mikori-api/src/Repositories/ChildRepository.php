@@ -20,6 +20,16 @@ final class ChildRepository extends BaseRepository
     }
 
     /**
+     * Busca un hijo por id (sin filtro de usuario). Uso interno / device-auth.
+     * @return array<string,mixed>|null
+     */
+    public function findById(int $childId): ?array
+    {
+        $row = $this->run('SELECT * FROM children WHERE id = :id', [':id' => $childId])->fetch();
+        return $row ?: null;
+    }
+
+    /**
      * Busca un hijo asegurando que pertenece al usuario (aislamiento por dueño).
      * @return array<string,mixed>|null
      */

@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.MikoriKids" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.MikoriKids.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/washi</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MikoriKids</item>
+    </style>
+</resources>
