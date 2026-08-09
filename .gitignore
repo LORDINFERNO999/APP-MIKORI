@@ -1,0 +1,41 @@
+# ───────── General ─────────
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.env
+.env.*
+!.env.example
+
+# ───────── Android (mikori-parent / mikori-kids) ─────────
+*.iml
+.gradle/
+local.properties
+.idea/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+google-services.json
+key.properties
+*.jks
+*.keystore
+
+# ───────── PHP / Laravel (mikori-api) ─────────
+/mikori-api/vendor/
+/mikori-api/node_modules/
+/mikori-api/public/storage
+/mikori-api/storage/*.key
+/mikori-api/.phpunit.result.cache
+/mikori-api/bootstrap/cache/*.php
+composer.phar
+
+# ───────── Node (herramientas) ─────────
+node_modules/
+npm-debug.log
+yarn-error.log
