@@ -1,0 +1,11 @@
+<resources>
+    <!-- Tema base (la UI real la define MikoriTheme en Compose). -->
+    <style name="Theme.Mikori" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Splash screen (androidx.core:core-splashscreen) -->
+    <style name="Theme.Mikori.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/washi</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Mikori</item>
+    </style>
+</resources>

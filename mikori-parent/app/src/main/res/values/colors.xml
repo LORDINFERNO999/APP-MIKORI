@@ -1,0 +1,7 @@
+<resources>
+    <!-- Colores para splash e ícono adaptativo (fuente: docs/02-design-system.md) -->
+    <color name="matcha">#4F7A5B</color>
+    <color name="matcha_light">#CDE7CE</color>
+    <color name="washi">#FBF7F0</color>
+    <color name="ink">#2B2A27</color>
+</resources>
