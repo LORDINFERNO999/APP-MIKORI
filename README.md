@@ -35,4 +35,5 @@
 
 ## Documentación
 
-Empieza por 👉 [`docs/01-arquitectura.md`](./docs/01-arquitectura.md) — análisis técnico completo, decisiones, endpoints, permisos, riesgos y plan de V1.
+- 👉 [`docs/01-arquitectura.md`](./docs/01-arquitectura.md) — análisis técnico completo, decisiones, endpoints, permisos, riesgos y plan de V1.
+- 🌸 [`docs/02-design-system.md`](./docs/02-design-system.md) — sistema visual "Modern Japanese Kids": paleta, tipografía, logo, mascota Kori, componentes, pantallas y dark mode.
