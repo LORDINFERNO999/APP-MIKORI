@@ -31,6 +31,8 @@ key.properties
 /mikori-api/node_modules/
 /mikori-api/public/storage
 /mikori-api/storage/*.key
+*.sqlite
+*.sqlite3
 /mikori-api/.phpunit.result.cache
 /mikori-api/bootstrap/cache/*.php
 composer.phar
