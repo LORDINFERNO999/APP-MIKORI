@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Kori — mascota de MIKORI -->
+    <path android:fillColor="#CDE7CE" android:pathData="M54,27 C56,21 62,21 63,25 C62,30 56,31 54,27 z" />
+    <path android:strokeColor="#CDE7CE" android:strokeWidth="2" android:pathData="M54,34 L54,27" />
+    <path android:fillColor="#FFFDF9" android:pathData="M30,38 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0 z" />
+    <path android:fillColor="#FFFDF9" android:pathData="M62,38 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0 z" />
+    <path android:fillColor="#FFFDF9" android:pathData="M29,58 a25,25 0 1,0 50,0 a25,25 0 1,0 -50,0 z" />
+    <path android:fillColor="#F2C6CE" android:pathData="M37.5,66 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0 z" />
+    <path android:fillColor="#F2C6CE" android:pathData="M63.5,66 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0 z" />
+    <path android:fillColor="#2B2A27" android:pathData="M43,57 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 z" />
+    <path android:fillColor="#2B2A27" android:pathData="M59,57 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 z" />
+    <path android:strokeColor="#2B2A27" android:strokeWidth="1.5" android:strokeLineCap="round" android:pathData="M51,64 q3,3 6,0" />
+</vector>

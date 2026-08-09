@@ -1,0 +1,21 @@
+{
+    "name": "mikori/api",
+    "description": "MIKORI API — Backend REST de control parental (PHP)",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mikori\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
