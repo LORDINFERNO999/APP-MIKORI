@@ -3,6 +3,7 @@ package com.mikori.kids.data.remote
 import com.mikori.kids.data.remote.dto.AcceptedData
 import com.mikori.kids.data.remote.dto.Envelope
 import com.mikori.kids.data.remote.dto.MessageData
+import com.mikori.kids.data.remote.dto.PolicyData
 import com.mikori.kids.data.remote.dto.RedeemData
 import com.mikori.kids.data.remote.dto.RedeemRequest
 import com.mikori.kids.data.remote.dto.TodaySummaryData
@@ -28,4 +29,8 @@ interface KidsApiService {
     /** Resumen de hoy del hijo vinculado (device-auth). */
     @GET("devices/me/today")
     suspend fun today(): Envelope<TodaySummaryData>
+
+    /** Política de enforcement (V2, device-auth). */
+    @GET("devices/me/policy")
+    suspend fun policy(): Envelope<PolicyData>
 }

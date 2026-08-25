@@ -7,6 +7,12 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- V2 (Control): overlay de "descanso" + servicio de vigilancia -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <!--
       Usage Access: permiso especial de acceso al uso. No se concede con el diálogo
       normal; el usuario lo activa en Ajustes (ACTION_USAGE_ACCESS_SETTINGS).
@@ -45,6 +51,18 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <!-- Servicio de vigilancia (V2): detecta la app en primer plano y muestra
+             la pantalla de descanso cuando aplica la política. Tipo specialUse:
+             Google Play exige justificar su uso como control parental. -->
+        <service
+            android:name=".guard.MikoriGuardService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="parental_control_supervision" />
+        </service>
 
         <!-- Inicialización bajo demanda de WorkManager (usamos Configuration.Provider + Hilt) -->
         <provider

@@ -114,6 +114,46 @@ final class AppUsageRepository extends BaseRepository
         )->fetchAll();
     }
 
+    /**
+     * Catálogo de apps que el hijo ha usado (para elegir cuáles limitar/bloquear).
+     * @return list<array<string,mixed>>
+     */
+    public function appsCatalogForChild(int $childId): array
+    {
+        return $this->run(
+            'SELECT DISTINCT a.id, a.package_name, a.app_label, a.category
+             FROM app_usage u
+             INNER JOIN devices d ON d.id = u.device_id
+             INNER JOIN applications a ON a.id = u.application_id
+             WHERE d.child_id = :cid
+             ORDER BY a.app_label ASC',
+            [':cid' => $childId]
+        )->fetchAll();
+    }
+
+    /**
+     * Mapa package_name => segundos usados hoy por el hijo.
+     * @return array<string,int>
+     */
+    public function usedSecondsByPackageToday(int $childId, string $date): array
+    {
+        $rows = $this->run(
+            'SELECT a.package_name, SUM(u.duration_seconds) AS seconds
+             FROM app_usage u
+             INNER JOIN devices d ON d.id = u.device_id
+             INNER JOIN applications a ON a.id = u.application_id
+             WHERE d.child_id = :cid AND u.usage_date = :date
+             GROUP BY a.package_name',
+            [':cid' => $childId, ':date' => $date]
+        )->fetchAll();
+
+        $map = [];
+        foreach ($rows as $r) {
+            $map[$r['package_name']] = (int) $r['seconds'];
+        }
+        return $map;
+    }
+
     private function minDate(?string $a, ?string $b): ?string
     {
         if ($a === null) {

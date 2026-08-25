@@ -32,6 +32,9 @@ import com.mikori.parent.feature.auth.LoginScreen
 import com.mikori.parent.feature.auth.RegisterScreen
 import com.mikori.parent.feature.child.AddChildScreen
 import com.mikori.parent.feature.child.ChildDetailScreen
+import com.mikori.parent.feature.control.AppRulesScreen
+import com.mikori.parent.feature.control.ControlScreen
+import com.mikori.parent.feature.control.SchedulesScreen
 import com.mikori.parent.feature.dashboard.DashboardScreen
 import com.mikori.parent.feature.limits.LimitsScreen
 import com.mikori.parent.feature.linking.LinkingScreen
@@ -136,8 +139,32 @@ private fun MainScaffold() {
                     onOpenStats = { nav.navigate(Routes.stats(id)) },
                     onOpenLimits = { nav.navigate(Routes.limits(id)) },
                     onOpenLinking = { nav.navigate(Routes.linking(id)) },
+                    onOpenControl = { nav.navigate(Routes.control(id)) },
                     onDeleted = { nav.popBackStack(Routes.DASHBOARD, inclusive = false) },
                 )
+            }
+            composable(
+                Routes.CONTROL,
+                arguments = listOf(navArgument("childId") { type = NavType.StringType }),
+            ) { entry ->
+                val id = currentChildId(entry)
+                ControlScreen(
+                    onBack = { nav.popBackStack() },
+                    onOpenAppRules = { nav.navigate(Routes.appRules(id)) },
+                    onOpenSchedules = { nav.navigate(Routes.schedules(id)) },
+                )
+            }
+            composable(
+                Routes.APP_RULES,
+                arguments = listOf(navArgument("childId") { type = NavType.StringType }),
+            ) {
+                AppRulesScreen(onBack = { nav.popBackStack() })
+            }
+            composable(
+                Routes.SCHEDULES,
+                arguments = listOf(navArgument("childId") { type = NavType.StringType }),
+            ) {
+                SchedulesScreen(onBack = { nav.popBackStack() })
             }
             composable(
                 Routes.STATS,

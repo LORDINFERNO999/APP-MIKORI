@@ -202,6 +202,67 @@ check('me/today incluye child_name', ($p['data']['child_name'] ?? null) === 'Mat
 [$s, $p] = call($router, 'GET', '/v1/devices/me/today');
 check('me/today sin token responde 401', $s === 401, [$s, $p]);
 
+// ═══════════════════ V2 (Control) ═══════════════════
+
+// V2-1) Definir reglas por app (límite a YouTube, bloquear TikTok)
+[$s, $p] = call($router, 'PUT', '/v1/children/' . $childId . '/app-rules', ['rules' => [
+    ['package' => 'com.google.android.youtube', 'max_minutes' => 1],
+    ['package' => 'com.zhiliaoapp.musically', 'label' => 'TikTok', 'is_blocked' => true],
+]], $token);
+check('V2 definir app-rules responde 200', $s === 200, [$s, $p]);
+check('V2 app-rules devuelve 2 reglas', count($p['data'] ?? []) === 2, $p);
+
+// V2-2) Catálogo de apps del hijo (incluye YouTube usada)
+[$s, $p] = call($router, 'GET', '/v1/children/' . $childId . '/apps', [], $token);
+check('V2 apps catálogo responde 200', $s === 200, [$s, $p]);
+check('V2 catálogo incluye YouTube', in_array('com.google.android.youtube', array_column($p['data'] ?? [], 'package_name'), true), $p);
+
+// V2-3) Crear horario nocturno
+[$s, $p] = call($router, 'POST', '/v1/children/' . $childId . '/schedules', [
+    'name' => 'Horario nocturno', 'type' => 'night', 'start_time' => '21:30', 'end_time' => '07:00', 'days_mask' => 127,
+], $token);
+check('V2 crear horario responde 201', $s === 201, [$s, $p]);
+$scheduleId = $p['data']['id'] ?? null;
+check('V2 horario cruza medianoche (start>end)', ($p['data']['start_time'] ?? '') === '21:30' && ($p['data']['end_time'] ?? '') === '07:00', $p);
+
+// V2-4) Listar horarios
+[$s, $p] = call($router, 'GET', '/v1/children/' . $childId . '/schedules', [], $token);
+check('V2 listar horarios devuelve 1', count($p['data'] ?? []) === 1, $p);
+
+// V2-5) Editar horario
+[$s, $p] = call($router, 'PUT', '/v1/children/' . $childId . '/schedules/' . $scheduleId, [
+    'name' => 'Noche', 'type' => 'night', 'start_time' => '22:00', 'end_time' => '06:30', 'days_mask' => 127,
+], $token);
+check('V2 editar horario responde 200', $s === 200 && ($p['data']['start_time'] ?? '') === '22:00', [$s, $p]);
+
+// V2-6) Iniciar pausa (30 min)
+[$s, $p] = call($router, 'POST', '/v1/children/' . $childId . '/pause', ['minutes' => 30], $token);
+check('V2 iniciar pausa responde 201', $s === 201, [$s, $p]);
+check('V2 pausa devuelve pause_until', !empty($p['data']['pause_until']), $p);
+
+// V2-7) Política de enforcement (device-auth)
+[$s, $p] = call($router, 'GET', '/v1/devices/me/policy', [], $deviceToken);
+check('V2 policy responde 200', $s === 200, [$s, $p]);
+check('V2 policy block_all=true por pausa activa', ($p['data']['block_all'] ?? false) === true, $p['data'] ?? null);
+check('V2 policy bloquea TikTok', in_array('com.zhiliaoapp.musically', $p['data']['blocked_packages'] ?? [], true), $p['data'] ?? null);
+$ytLimit = null;
+foreach (($p['data']['app_limits'] ?? []) as $al) { if ($al['package'] === 'com.google.android.youtube') $ytLimit = $al; }
+check('V2 policy YouTube excedido (3000s >= 60s)', $ytLimit !== null && $ytLimit['exceeded'] === true, $ytLimit);
+
+// V2-8) Cancelar pausa
+[$s, $p] = call($router, 'DELETE', '/v1/children/' . $childId . '/pause', [], $token);
+check('V2 cancelar pausa responde 200', $s === 200, [$s, $p]);
+[$s, $p] = call($router, 'GET', '/v1/devices/me/policy', [], $deviceToken);
+check('V2 tras cancelar, pause_until nulo', ($p['data']['pause_until'] ?? null) === null, $p['data'] ?? null);
+
+// V2-9) Eliminar horario
+[$s, $p] = call($router, 'DELETE', '/v1/children/' . $childId . '/schedules/' . $scheduleId, [], $token);
+check('V2 eliminar horario responde 200', $s === 200, [$s, $p]);
+
+// V2-10) Aislamiento: otro usuario no puede tocar reglas del hijo ajeno
+[$s, $p] = call($router, 'GET', '/v1/children/' . $childId . '/app-rules', [], $token2);
+check('V2 otro usuario NO accede a app-rules (404)', $s === 404, [$s, $p]);
+
 // 25) Refresh token
 [$s, $p] = call($router, 'POST', '/v1/auth/refresh', ['refresh_token' => $refresh]);
 check('refresh responde 200', $s === 200, [$s, $p]);

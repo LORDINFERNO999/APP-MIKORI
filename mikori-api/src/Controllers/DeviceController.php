@@ -37,6 +37,14 @@ final class DeviceController
         return Response::ok($summary);
     }
 
+    /** Política de enforcement (V2) para la app Kids. */
+    public function policy(Request $request): Response
+    {
+        $device = $request->device();
+        $policy = (new \Mikori\Services\PolicyService())->forChild((int) $device['child_id']);
+        return Response::ok($policy);
+    }
+
     /** Registra/actualiza el token FCM del dispositivo. */
     public function updateFcmToken(Request $request): Response
     {

@@ -17,6 +17,9 @@ use Mikori\Controllers\DeviceController;
 use Mikori\Controllers\HealthController;
 use Mikori\Controllers\LimitController;
 use Mikori\Controllers\LinkController;
+use Mikori\Controllers\PauseController;
+use Mikori\Controllers\RuleController;
+use Mikori\Controllers\ScheduleController;
 use Mikori\Controllers\StatsController;
 use Mikori\Core\Router;
 
@@ -60,5 +63,25 @@ $router->post('/v1/devices/usage', [StatsController::class, 'ingest'])->deviceAu
 $router->post('/v1/devices/heartbeat', [DeviceController::class, 'heartbeat'])->deviceAuth();
 $router->get('/v1/devices/me/today', [DeviceController::class, 'today'])->deviceAuth();
 $router->patch('/v1/devices/fcm-token', [DeviceController::class, 'updateFcmToken'])->deviceAuth();
+
+// ═══════════════════════════ V2 (Control) ═══════════════════════════
+
+// Reglas por app (Parent)
+$router->get('/v1/children/{id}/apps', [RuleController::class, 'apps'])->auth();
+$router->get('/v1/children/{id}/app-rules', [RuleController::class, 'index'])->auth();
+$router->put('/v1/children/{id}/app-rules', [RuleController::class, 'update'])->auth();
+
+// Horarios (Parent)
+$router->get('/v1/children/{id}/schedules', [ScheduleController::class, 'index'])->auth();
+$router->post('/v1/children/{id}/schedules', [ScheduleController::class, 'store'])->auth();
+$router->put('/v1/children/{id}/schedules/{sid}', [ScheduleController::class, 'update'])->auth();
+$router->delete('/v1/children/{id}/schedules/{sid}', [ScheduleController::class, 'destroy'])->auth();
+
+// Pausas (Parent)
+$router->post('/v1/children/{id}/pause', [PauseController::class, 'start'])->auth();
+$router->delete('/v1/children/{id}/pause', [PauseController::class, 'cancel'])->auth();
+
+// Política de enforcement (Kids)
+$router->get('/v1/devices/me/policy', [DeviceController::class, 'policy'])->deviceAuth();
 
 return $router;
