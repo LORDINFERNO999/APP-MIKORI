@@ -55,6 +55,7 @@ fun ChildDetailScreen(
     onOpenStats: () -> Unit,
     onOpenLimits: () -> Unit,
     onOpenLinking: () -> Unit,
+    onOpenControl: () -> Unit,
     onDeleted: () -> Unit,
     viewModel: ChildDetailViewModel = hiltViewModel(),
 ) {
@@ -158,6 +159,12 @@ fun ChildDetailScreen(
                     MikoriTonalButton(text = "Ver semana", onClick = onOpenStats, modifier = Modifier.weight(1f))
                     MikoriTonalButton(text = "Límites", onClick = onOpenLimits, modifier = Modifier.weight(1f))
                 }
+                Spacer(Modifier.height(Spacing.md))
+                MikoriTonalButton(
+                    text = "Control (bloqueo, horarios, pausas)",
+                    onClick = onOpenControl,
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 Spacer(Modifier.height(Spacing.md))
                 MikoriTonalButton(
                     text = "Vincular dispositivo",

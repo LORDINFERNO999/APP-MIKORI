@@ -30,6 +30,7 @@ import com.mikori.kids.core.ui.components.TimeProgressBar
 import com.mikori.kids.core.ui.theme.Spacing
 import com.mikori.kids.core.ui.theme.textSecondary
 import com.mikori.kids.core.util.TimeFormat
+import com.mikori.kids.guard.OverlayPermission
 import com.mikori.kids.usage.UsageAccess
 
 @Composable
@@ -90,6 +91,35 @@ private fun HomeContent(state: HomeUiState) {
                     MikoriButton(
                         text = "Activar",
                         onClick = { context.startActivity(UsageAccess.settingsIntent()) },
+                    )
+                }
+            }
+        }
+
+        if (!state.overlayGranted) {
+            Spacer(Modifier.height(Spacing.md))
+            Surface(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = MaterialTheme.shapes.large,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(Modifier.padding(Spacing.lg), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        "Falta el permiso de pantalla de descanso",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Spacer(Modifier.height(Spacing.xs))
+                    Text(
+                        "Permite a MIKORI mostrarse sobre otras apps para avisarte con amabilidad cuando toca descansar.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(Spacing.md))
+                    MikoriButton(
+                        text = "Activar",
+                        onClick = { context.startActivity(OverlayPermission.settingsIntent(context)) },
                     )
                 }
             }

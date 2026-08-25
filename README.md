@@ -38,6 +38,7 @@
 - 👉 [`docs/01-arquitectura.md`](./docs/01-arquitectura.md) — análisis técnico completo, decisiones, endpoints, permisos, riesgos y plan de V1.
 - 🌸 [`docs/02-design-system.md`](./docs/02-design-system.md) — sistema visual "Modern Japanese Kids": paleta, tipografía, logo, mascota Kori, componentes, pantallas y dark mode.
 - 🧪 [`docs/03-guia-pruebas.md`](./docs/03-guia-pruebas.md) — **cómo probar V1 paso a paso** (backend + apps) cuando tengas tu equipo.
+- 🔒 [`docs/04-v2-control.md`](./docs/04-v2-control.md) — **V2 (Control)**: decisión del mecanismo de bloqueo Android, diseño de datos/API y limitaciones.
 
 ## Probar V1
 

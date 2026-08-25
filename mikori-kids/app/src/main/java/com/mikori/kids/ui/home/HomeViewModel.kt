@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.mikori.kids.core.MikoriResult
 import com.mikori.kids.data.remote.dto.AppUsageDto
 import com.mikori.kids.data.repository.UsageRepository
+import com.mikori.kids.guard.GuardService
+import com.mikori.kids.guard.OverlayPermission
 import com.mikori.kids.usage.UsageAccess
 import com.mikori.kids.work.WorkScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +23,7 @@ data class HomeUiState(
     val loading: Boolean = true,
     val error: String? = null,
     val usageAccessGranted: Boolean = true,
+    val overlayGranted: Boolean = true,
     val childName: String? = null,
     val usedSeconds: Int = 0,
     val limitMinutes: Int? = null,
@@ -43,11 +46,14 @@ class HomeViewModel @Inject constructor(
         refresh()
     }
 
-    /** Re-verifica permiso, fuerza recolección y recarga el resumen. */
+    /** Re-verifica permisos, fuerza recolección, arranca el guardián y recarga el resumen. */
     fun refresh() {
         val granted = UsageAccess.isGranted(context)
-        _state.update { it.copy(loading = true, usageAccessGranted = granted) }
+        val overlay = OverlayPermission.isGranted(context)
+        _state.update { it.copy(loading = true, usageAccessGranted = granted, overlayGranted = overlay) }
         if (granted) WorkScheduler.runOnce(context)
+        // Con acceso al uso + overlay, arranca el servicio de vigilancia (V2).
+        if (granted && overlay) GuardService.start(context)
 
         viewModelScope.launch {
             when (val r = usageRepository.today()) {

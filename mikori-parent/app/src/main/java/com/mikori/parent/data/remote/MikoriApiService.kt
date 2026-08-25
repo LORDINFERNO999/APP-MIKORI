@@ -1,7 +1,14 @@
 package com.mikori.parent.data.remote
 
+import com.mikori.parent.data.remote.dto.AppCatalogDto
+import com.mikori.parent.data.remote.dto.AppRuleDto
 import com.mikori.parent.data.remote.dto.AuthData
 import com.mikori.parent.data.remote.dto.ChildDto
+import com.mikori.parent.data.remote.dto.PauseData
+import com.mikori.parent.data.remote.dto.PauseRequest
+import com.mikori.parent.data.remote.dto.ScheduleDto
+import com.mikori.parent.data.remote.dto.ScheduleRequest
+import com.mikori.parent.data.remote.dto.SetAppRulesRequest
 import com.mikori.parent.data.remote.dto.CreateChildRequest
 import com.mikori.parent.data.remote.dto.Envelope
 import com.mikori.parent.data.remote.dto.ForgotPasswordRequest
@@ -19,6 +26,7 @@ import com.mikori.parent.data.remote.dto.StatsWeekData
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -81,4 +89,29 @@ interface MikoriApiService {
 
     @PUT("children/{id}/limits")
     suspend fun setLimits(@Path("id") id: Long, @Body body: SetLimitsRequest): Envelope<LimitsData>
+
+    // ── V2: Control ──
+    @GET("children/{id}/apps")
+    suspend fun childApps(@Path("id") id: Long): Envelope<List<AppCatalogDto>>
+
+    @GET("children/{id}/app-rules")
+    suspend fun appRules(@Path("id") id: Long): Envelope<List<AppRuleDto>>
+
+    @PUT("children/{id}/app-rules")
+    suspend fun setAppRules(@Path("id") id: Long, @Body body: SetAppRulesRequest): Envelope<List<AppRuleDto>>
+
+    @GET("children/{id}/schedules")
+    suspend fun schedules(@Path("id") id: Long): Envelope<List<ScheduleDto>>
+
+    @POST("children/{id}/schedules")
+    suspend fun createSchedule(@Path("id") id: Long, @Body body: ScheduleRequest): Envelope<ScheduleDto>
+
+    @DELETE("children/{id}/schedules/{sid}")
+    suspend fun deleteSchedule(@Path("id") id: Long, @Path("sid") sid: Long): Envelope<MessageData>
+
+    @POST("children/{id}/pause")
+    suspend fun startPause(@Path("id") id: Long, @Body body: PauseRequest): Envelope<PauseData>
+
+    @HTTP(method = "DELETE", path = "children/{id}/pause", hasBody = false)
+    suspend fun cancelPause(@Path("id") id: Long): Envelope<MessageData>
 }

@@ -55,3 +55,32 @@ app/src/main/java/com/mikori/kids/
 Sin keylogger, sin lectura de mensajes, sin micrófono/cámara ocultos, sin captura de
 pantalla, sin evadir protecciones del sistema. Solo mecanismos oficiales de control
 parental de Android, con total transparencia hacia el menor.
+
+
+
+---
+
+## V2 (Control) — enforcement
+
+Además del monitoreo (V1), Kids aplica la **política de control** definida por el padre.
+
+- **Mecanismo**: servicio en primer plano (`guard/MikoriGuardService`, tipo `specialUse`)
+  que detecta la app en primer plano con `UsageStatsManager` y, cuando corresponde,
+  muestra una **pantalla de descanso** como *overlay* (`SYSTEM_ALERT_WINDOW`). No usa
+  AccessibilityService ni Device Owner. Ver decisión completa en
+  [`../docs/04-v2-control.md`](../docs/04-v2-control.md).
+- **Política**: se obtiene de `GET /devices/me/policy`, se **cachea** localmente
+  (`PolicyRepository`) y se refresca cada ~30 s, de modo que el bloqueo funciona aun sin red.
+- **Precedencia** (ver doc §6): pausa → horario → límite diario → app bloqueada → límite por app.
+
+### Permisos nuevos (V2)
+| Permiso | Para qué | Cómo se concede |
+|---|---|---|
+| `SYSTEM_ALERT_WINDOW` | Dibujar la pantalla de descanso | Ajustes ("Mostrar sobre otras apps") — la app lo solicita desde Home |
+| `FOREGROUND_SERVICE_SPECIAL_USE` | Servicio de vigilancia persistente | Declarado en manifest (Play exige justificación) |
+| `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` | Evitar que el sistema mate el servicio | Opcional, recomendado |
+
+### Limitaciones (honestas)
+Es un bloqueo **"suave"**: efectivo para niños, pero un adolescente con conocimientos
+podría sortearlo. Para bloqueo infranqueable haría falta el "Modo reforzado" (Device
+Owner), documentado como opción futura. MIKORI no oculta la app ni evade protecciones.

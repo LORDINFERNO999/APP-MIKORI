@@ -69,3 +69,29 @@ data class TodaySummaryData(
 
 @Serializable
 data class MessageData(val message: String)
+
+// ── V2: política de enforcement ──
+@Serializable
+data class AppLimitDto(
+    val `package`: String,
+    @SerialName("max_minutes") val maxMinutes: Int,
+    @SerialName("used_seconds") val usedSeconds: Int,
+    val exceeded: Boolean,
+)
+
+@Serializable
+data class ActiveScheduleDto(
+    val name: String,
+    val type: String,
+)
+
+@Serializable
+data class PolicyData(
+    @SerialName("daily_limit_reached") val dailyLimitReached: Boolean = false,
+    @SerialName("remaining_seconds") val remainingSeconds: Int? = null,
+    @SerialName("blocked_packages") val blockedPackages: List<String> = emptyList(),
+    @SerialName("app_limits") val appLimits: List<AppLimitDto> = emptyList(),
+    @SerialName("active_schedule") val activeSchedule: ActiveScheduleDto? = null,
+    @SerialName("pause_until") val pauseUntil: String? = null,
+    @SerialName("block_all") val blockAll: Boolean = false,
+)
