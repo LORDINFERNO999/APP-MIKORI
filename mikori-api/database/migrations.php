@@ -308,4 +308,103 @@ return [
             )
         SQL,
     ],
+
+    // ═══════════════════════════ V2 (Control) ═══════════════════════════
+
+    // app_rules: límite por app y/o bloqueo por app
+    '010_app_rules' => [
+        'mysql' => <<<SQL
+            CREATE TABLE IF NOT EXISTS app_rules (
+                id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                child_id BIGINT UNSIGNED NOT NULL,
+                application_id BIGINT UNSIGNED NOT NULL,
+                max_minutes SMALLINT UNSIGNED NULL,
+                is_blocked TINYINT(1) NOT NULL DEFAULT 0,
+                active TINYINT(1) NOT NULL DEFAULT 1,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY uq_apprules_child_app (child_id, application_id),
+                CONSTRAINT fk_apprules_child FOREIGN KEY (child_id) REFERENCES children (id) ON DELETE CASCADE,
+                CONSTRAINT fk_apprules_app FOREIGN KEY (application_id) REFERENCES applications (id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        SQL,
+        'sqlite' => <<<SQL
+            CREATE TABLE IF NOT EXISTS app_rules (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                child_id INTEGER NOT NULL,
+                application_id INTEGER NOT NULL,
+                max_minutes INTEGER NULL,
+                is_blocked INTEGER NOT NULL DEFAULT 0,
+                active INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+                UNIQUE (child_id, application_id),
+                FOREIGN KEY (child_id) REFERENCES children (id) ON DELETE CASCADE,
+                FOREIGN KEY (application_id) REFERENCES applications (id) ON DELETE CASCADE
+            )
+        SQL,
+    ],
+
+    // schedules: franjas horarias de bloqueo (escolar/nocturno/personalizado)
+    '011_schedules' => [
+        'mysql' => <<<SQL
+            CREATE TABLE IF NOT EXISTS schedules (
+                id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                child_id BIGINT UNSIGNED NOT NULL,
+                name VARCHAR(120) NOT NULL,
+                type ENUM('school','night','custom') NOT NULL DEFAULT 'custom',
+                start_time TIME NOT NULL,
+                end_time TIME NOT NULL,
+                days_mask TINYINT UNSIGNED NOT NULL DEFAULT 127,
+                active TINYINT(1) NOT NULL DEFAULT 1,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY idx_sched_child (child_id),
+                CONSTRAINT fk_sched_child FOREIGN KEY (child_id) REFERENCES children (id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        SQL,
+        'sqlite' => <<<SQL
+            CREATE TABLE IF NOT EXISTS schedules (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                child_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                type TEXT NOT NULL DEFAULT 'custom' CHECK (type IN ('school','night','custom')),
+                start_time TEXT NOT NULL,
+                end_time TEXT NOT NULL,
+                days_mask INTEGER NOT NULL DEFAULT 127,
+                active INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+                FOREIGN KEY (child_id) REFERENCES children (id) ON DELETE CASCADE
+            )
+        SQL,
+    ],
+
+    // pauses: pausa temporal (bloqueo total hasta until_at)
+    '012_pauses' => [
+        'mysql' => <<<SQL
+            CREATE TABLE IF NOT EXISTS pauses (
+                id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                child_id BIGINT UNSIGNED NOT NULL,
+                until_at DATETIME NOT NULL,
+                active TINYINT(1) NOT NULL DEFAULT 1,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY idx_pauses_child (child_id),
+                CONSTRAINT fk_pauses_child FOREIGN KEY (child_id) REFERENCES children (id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        SQL,
+        'sqlite' => <<<SQL
+            CREATE TABLE IF NOT EXISTS pauses (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                child_id INTEGER NOT NULL,
+                until_at TEXT NOT NULL,
+                active INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                FOREIGN KEY (child_id) REFERENCES children (id) ON DELETE CASCADE
+            )
+        SQL,
+    ],
 ];
